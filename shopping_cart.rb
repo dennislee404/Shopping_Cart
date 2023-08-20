@@ -5,7 +5,7 @@ require 'colorize'
 def main()
 	loop do
 	new_customer()
-	puts "Enter 'y' for next customer.".green
+	puts "Enter 'y' for next customer".black.on_green
 	restart = gets.chomp.downcase
 	break if restart != 'y'
 	end
@@ -27,14 +27,14 @@ def set_default()
 end
 
 def get_name()
-	puts "Welcome to Baratas Supermarket".green
-	puts "Please enter your name".green
+	puts "Welcome to Baratas Supermarket".black.on_green
+	puts "Please enter your name.".green
 	@customer_name = gets.chomp.upcase
 end
 
 def add_to_basket()
 	loop do
-		puts "Hi #{@customer_name}. Please key in your item".green
+		puts "Hi #{@customer_name}. Please key in your item.".green
 		@item = gets.chomp.downcase
 		calculator()
 		puts "Enter 'y' if you would like to continue adding items".green
@@ -49,9 +49,9 @@ def calculator()
 		@qty = gets.to_f
 		update_basket()		
 		@total += @menu[:"#{@item}"] * @qty
-		puts "Current total is RM #{sprintf('%.2f', @total)}".green
+		puts "#{"Current total is".green}" " #{"RM #{sprintf('%.2f', @total)}".red}"
 	else
-		puts "Invalid item. Please key in again".red
+		puts "Invalid item. Please key in again.".red
 	end
 end
 
@@ -71,6 +71,8 @@ end
 
 def print_receipt()
 	#puts "Item     Qty     Price".blue
+	puts " "
+	puts "---------------------------"
 	puts "Item           Price".blue
 	#@basket_qty.each do |item, qty, price|
 		#puts "#{item} x #{sprintf('%.0f',qty)} = #{sprintf('%.2f',price)}".yellow
@@ -78,18 +80,20 @@ def print_receipt()
 	@basket_price.each do |item, price|
 		puts "#{item}          RM#{sprintf('%.2f',price)}".yellow
 	end
+	puts "---------------------------"
+	puts " "
 end
 
 def discount()
 	loop do
-		puts "Please enter a valid discount code or type 'X' to skip".green
+		puts "Please enter a valid discount code or type 'X' to skip.".green
 		@input_code = gets.chomp.upcase
 		@val = 0
 		break if @input_code == "X"
 		#puts @discount_code.key?:"#{@input_code}"
 		if @discount_code.has_key?(:"#{@input_code}")
 			@val = @discount_code[:"#{@input_code}"]
-			puts "#{@val*100}% discount has been applied".green
+			puts "#{sprintf('%.0f',@val*100)}% discount has been applied.".green
 			return @val
 		else
 			puts "Invalid discount code.".red
@@ -99,15 +103,15 @@ end
 
 def checkout()
 	loop do
-	puts "Enter 'A' to continue adding items".green
-	puts "Enter 'B' to proceed to payment".green
+	puts "Enter 'A' to continue adding items.".green
+	puts "Enter 'B' to proceed to payment.".green
 	proceed = gets.chomp.upcase
 		if proceed == "A"
 			add_to_basket()
 		elsif proceed == "B"
 			break
 		else
-			puts "Invalid response"
+			puts "Invalid response.".red
 		end
 	end
 end
@@ -115,18 +119,19 @@ end
 def payment()
 	@total_after_discount = @total * (1-@val)
 	print_receipt()
-	puts "#{@val*100}% discount has been applied".green
-	puts "Final amount to be paid is RM#{sprintf('%.2f',@total_after_discount)}".green
-	puts "Please enter the amount to be paid".green
+	puts "#{"Discount code:".green}" " #{"#{@input_code}".red}"
+	puts "#{sprintf('%.0f',@val*100)}% discount has been applied.".green
+	puts "#{"Final amount to be paid is".green}" " #{"RM#{sprintf('%.2f',@total_after_discount)}".red}"
+	puts "Please enter the amount to be paid.".green
 	loop do
 		payment = gets.to_f
 		change = 0
 		if payment >= @total_after_discount
 			change = payment - @total_after_discount
-			puts "Your change is RM#{sprintf('%.2f',change)}.".green
-			puts "Thank you for shopping with Baratas Supermarket".green
+			puts "#{"Your change is".green}" " #{"RM#{sprintf('%.2f',change)}".red}"
+			puts "Thank you for shopping with Baratas Supermarket".black.on_green
 		else
-			puts "Insufficient amount. Please enter again".red
+			puts "Insufficient amount. Please enter again.".red
 		end
 		break if payment >= @total_after_discount
 	end
